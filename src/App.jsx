@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 
 // Issue 1: Inline API key (security issue)
 // Fix 1: Removed hardcoded API key (security issue)
@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 
 function App() {
   // Issue 2: State management bisa lebih baik
+  // Sudah terpisah, tidak diubah
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState('all')
@@ -104,17 +105,19 @@ function App() {
       <h1>My Todo List</h1>
       
       {/* Issue 11: Tidak ada label untuk accessibility */}
+      {/* Fix 11: Added accessible label for the input */}
       <div className="input-section">
-        <input 
+        <label htmlFor="todo-input" className="visually-hidden">
+          New todo
+        </label>
+        <input
+          id="todo-input"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              addTodo()
-            }
-          }}
+          onKeyDown={handleKeyDown}
           placeholder="What needs to be done?"
+          aria-label="New todo"
         />
         <button onClick={addTodo}>Add</button>
       </div>
@@ -148,13 +151,28 @@ function App() {
  
       <div className="todo-list" role="list" aria-label="Todo items">
         {/* Issue 13: Tidak ada handling untuk empty state */}
-        {getFilteredTodos().map((todo) => (
+        {/* Fix 13: Added empty state handling */}
+        {filteredTodos.length === 0 && (
+          <p className="empty-state">
+            {filter === 'all'
+              ? 'No todos yet. Add one above!'
+              : `No ${filter} todos.`}
+          </p>
+        )}
+ 
+        {filteredTodos.map((todo) => (
           // Issue 14: Key menggunakan index bisa lebih baik dengan ID
-          <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-            <input 
+          // Fix 14: Key already uses todo.id (stable unique ID, not array index)
+          <div
+            key={todo.id}
+            className={`todo-item ${todo.completed ? 'completed' : ''}`}
+            role="listitem"
+          >
+            <input
               type="checkbox"
               checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
+              aria-label={`Mark "${todo.text}" as ${todo.completed ? 'active' : 'completed'}`}
             />
             {/* Issue 15: Potential XSS jika text dari user input */}
             {/* Fix 15: Replaced dangerouslySetInnerHTML with safe text rendering */}
