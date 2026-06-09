@@ -54,15 +54,30 @@ function App() {
   }, [input])
   
   // Issue 7: Tidak ada error handling
-  const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id))
-  }
-  
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ))
-  }
+  const deleteTodo = useCallback((id) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id))
+  }, [])
+ 
+  const toggleTodo = useCallback((id) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    )
+  }, [])
+ 
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter') {
+        addTodo()
+      }
+    },
+    [addTodo]
+  )
+ 
+  const handleFilterAll = useCallback(() => setFilter('all'), [])
+  const handleFilterActive = useCallback(() => setFilter('active'), [])
+  const handleFilterCompleted = useCallback(() => setFilter('completed'), [])
   
   // Issue 8: Logic filtering yang bisa dipindah ke useMemo
   // Fix 8: Moved filtering logic to useMemo so it only recalculates when todos or filter changes
