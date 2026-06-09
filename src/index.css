@@ -56,6 +56,33 @@ button:hover {
   background: #0056b3;
 }
 
+/* Fix 12: Replaced inline styles with a proper CSS class */
+.filter-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+ 
+.filter-btn {
+  background: #007bff;
+}
+ 
+.filter-btn:hover {
+  background: #0056b3;
+}
+ 
+.filter-btn.active {
+  background: #28a745;
+}
+ 
+.filter-btn.active:hover {
+  background: #1e7e34;
+}
+ 
+.todo-list {
+  min-height: 40px;
+}
+
 .todo-item {
   display: flex;
   align-items: center;

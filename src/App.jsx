@@ -119,29 +119,34 @@ function App() {
         <button onClick={addTodo}>Add</button>
       </div>
       
-      {/* Issue 12: Inline styles (inconsistent dengan CSS file) */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <button 
-          onClick={() => setFilter('all')}
-          style={{ background: filter === 'all' ? '#28a745' : '#007bff' }}
+      {/* Fix 12: Replaced inline styles with CSS classes */}
+      <div className="filter-section">
+        <button
+          onClick={handleFilterAll}
+          className={filter === 'all' ? 'filter-btn active' : 'filter-btn'}
+          aria-pressed={filter === 'all'}
         >
           All
         </button>
-        <button 
-          onClick={() => setFilter('active')}
-          style={{ background: filter === 'active' ? '#28a745' : '#007bff' }}
+        <button
+          onClick={handleFilterActive}
+          className={filter === 'active' ? 'filter-btn active' : 'filter-btn'}
+          aria-pressed={filter === 'active'}
         >
           Active
         </button>
-        <button 
-          onClick={() => setFilter('completed')}
-          style={{ background: filter === 'completed' ? '#28a745' : '#007bff' }}
+        <button
+          onClick={handleFilterCompleted}
+          className={
+            filter === 'completed' ? 'filter-btn active' : 'filter-btn'
+          }
+          aria-pressed={filter === 'completed'}
         >
           Completed
         </button>
       </div>
-      
-      <div className="todo-list">
+ 
+      <div className="todo-list" role="list" aria-label="Todo items">
         {/* Issue 13: Tidak ada handling untuk empty state */}
         {getFilteredTodos().map((todo) => (
           // Issue 14: Key menggunakan index bisa lebih baik dengan ID
