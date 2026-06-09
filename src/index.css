@@ -85,6 +85,8 @@ button:hover {
 .todo-item span {
   flex: 1;
   color: #333;
+  /* Prevent XSS-like rendering artefacts from special chars */
+  word-break: break-word;
 }
 
 .delete-btn {

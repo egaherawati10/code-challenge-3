@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 
 // Issue 1: Inline API key (security issue)
+// Fix 1: Removed hardcoded API key (security issue)
+// API keys must never be committed to source code.
+// Use environment variables: import.meta.env.VITE_API_KEY
 
 function App() {
   // Issue 2: State management bisa lebih baik
@@ -124,19 +127,24 @@ function App() {
               onChange={() => toggleTodo(todo.id)}
             />
             {/* Issue 15: Potential XSS jika text dari user input */}
-            <span dangerouslySetInnerHTML={{ __html: todo.text }} />
-            <button 
+            {/* Fix 15: Replaced dangerouslySetInnerHTML with safe text rendering */}
+            <span>{todo.text}</span>
+            <button
               className="delete-btn"
               onClick={() => deleteTodo(todo.id)}
+              aria-label={`Delete "${todo.text}"`}
             >
               Delete
             </button>
           </div>
         ))}
       </div>
-      
-      <div className="stats">
-        <p>Total: {stats.total} | Active: {stats.active} | Completed: {stats.completed}</p>
+ 
+      <div className="stats" aria-live="polite">
+        <p>
+          Total: {stats.total} | Active: {stats.active} | Completed:{' '}
+          {stats.completed}
+        </p>
       </div>
       
       {/* Issue 16: Debug code yang tertinggal */}
