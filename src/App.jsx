@@ -21,9 +21,10 @@ function App() {
   }, [])
   
   // Issue 4: useEffect yang terlalu sering run
+  // Fix 4: Added [todos] dependency so it only runs when todos actually change
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  })
+  }, [todos])
   
   // Issue 5: Function yang tidak di-memoize, re-create setiap render
   const addTodo = () => {
