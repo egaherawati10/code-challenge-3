@@ -12,11 +12,16 @@ function App() {
   const [filter, setFilter] = useState('all')
   
   // Issue 3: useEffect tanpa dependency array yang tepat
+  // Fix 3: Added correct dependency array (empty = run once on mount)
   useEffect(() => {
-    // Load from localStorage
     const saved = localStorage.getItem('todos')
     if (saved) {
-      setTodos(JSON.parse(saved))
+      try {
+        // Fix 7: Added error handling for corrupted localStorage data
+        setTodos(JSON.parse(saved))
+      } catch {
+        localStorage.removeItem('todos')
+      }
     }
   }, [])
   
@@ -36,16 +41,17 @@ function App() {
     }
     
     // Issue 6: Menggunakan Date.now() sebagai ID (bisa collision)
+    // Fix 6: Use crypto.randomUUID() for collision-free IDs
     const newTodo = {
-      id: Date.now(),
-      text: input,
+      id: crypto.randomUUID(),
+      text: trimmed,
       completed: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }
-    
-    setTodos([...todos, newTodo])
+ 
+    setTodos((prev) => [...prev, newTodo])
     setInput('')
-  })
+  }, [input])
   
   // Issue 7: Tidak ada error handling
   const deleteTodo = (id) => {
