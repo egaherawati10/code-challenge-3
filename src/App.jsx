@@ -59,22 +59,23 @@ function App() {
   }
   
   // Issue 8: Logic filtering yang bisa dipindah ke useMemo
-  const getFilteredTodos = () => {
-    if (filter === 'active') {
-      return todos.filter(todo => !todo.completed)
-    }
-    if (filter === 'completed') {
-      return todos.filter(todo => todo.completed)
-    }
+  // Fix 8: Moved filtering logic to useMemo so it only recalculates when todos or filter changes
+  const filteredTodos = useMemo(() => {
+    if (filter === 'active') return todos.filter((t) => !t.completed)
+    if (filter === 'completed') return todos.filter((t) => t.completed)
     return todos
-  }
+  }, [todos, filter])
   
   // Issue 9: Calculation yang tidak perlu di setiap render
-  const stats = {
-    total: todos.length,
-    completed: todos.filter(t => t.completed).length,
-    active: todos.filter(t => !t.completed).length
-  }
+  // Fix 9: Memoize stats calculation
+  const stats = useMemo(
+    () => ({
+      total: todos.length,
+      completed: todos.filter((t) => t.completed).length,
+      active: todos.filter((t) => !t.completed).length,
+    }),
+    [todos]
+  )
   
   // Issue 10: Inline event handler dengan arrow function (re-create setiap render)
   return (
