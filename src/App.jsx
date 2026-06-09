@@ -27,8 +27,10 @@ function App() {
   }, [todos])
   
   // Issue 5: Function yang tidak di-memoize, re-create setiap render
-  const addTodo = () => {
-    if (input.trim() === '') {
+  // Fix 5 & 10: Memoized handlers with useCallback to avoid re-creating on every render
+  const addTodo = useCallback(() => {
+    const trimmed = input.trim()
+    if (trimmed === '') {
       alert('Please enter a todo')
       return
     }
@@ -43,7 +45,7 @@ function App() {
     
     setTodos([...todos, newTodo])
     setInput('')
-  }
+  })
   
   // Issue 7: Tidak ada error handling
   const deleteTodo = (id) => {
